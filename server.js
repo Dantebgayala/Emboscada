@@ -1,5 +1,5 @@
 const express=require("express"),http=require("http"),{Server}=require("socket.io");
-const app=express(),server=http.createServer(app),io=new Server(server);app.use(express.static("public"));
+const app=express(),server=http.createServer(app),io=new Server(server);app.use(express.static(__dirname));
 const rooms=new Map(),N=8,O=[[1,0],[-1,0],[0,1],[0,-1]];
 function fresh(){let b=Array.from({length:N},()=>Array(N).fill(null));for(let r=0;r<2;r++)for(let c=0;c<N;c++)if((r+c)%2===0)b[r][c]="W";for(let r=6;r<8;r++)for(let c=0;c<N;c++)if((r+c)%2)b[r][c]="B";return{board:b,turn:"W",score:{W:0,B:0},players:{W:null,B:null},winner:null}}
 function code(){return Math.random().toString(36).slice(2,8).toUpperCase()}
