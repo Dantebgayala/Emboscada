@@ -20,7 +20,7 @@ socket.on('complexo:err',m=>message(m));socket.on('complexo:joined',d=>{room=d.r
 function message(m){$('msg').textContent=m}
 function destName(d){return d?String(n(d.r,d.c)):'—'}
 function count(c){let z=0;for(const row of state.board)for(const p of row)if(p===c)z++;return z}
-function knight(r1,c1,r2,c2){let dr=Math.abs(r2-r1),dc=Math.abs(c2-c1);return !X.has(n(r2,c2))&&((dr===2&&dc===1)||(dr===1&&dc===2))}
+function knight(r1,c1,r2,c2){let dr=Math.abs(r2-r1),dc=Math.abs(c2-c1);return X.has(n(r2,c2))&&((dr===2&&dc===1)||(dr===1&&dc===2))}
 function special(r1,c1,r2,c2){
  for(const [dr,dc] of [[1,0],[-1,0],[0,1],[0,-1]]){const a=[r1+dr*3,c1+dc*3];if(a[0]<0||a[0]>=8||a[1]<0||a[1]>=8)continue;
   for(const [pr,pc] of [[1,0],[-1,0],[0,1],[0,-1]]){if((dr!==0&&pr!==0)||(dc!==0&&pc!==0))continue;const b=[a[0]+pr,a[1]+pc];if(b[0]<0||b[0]>=8||b[1]<0||b[1]>=8)continue;
@@ -28,7 +28,7 @@ function special(r1,c1,r2,c2){
   }
  }return false;
 }
-function legal(r1,c1,r2,c2){if(!state||!state.ready||state.turn!==color||!state.board[r1][c1]===color)return false;if(state.board[r1][c1]!==color||state.board[r2][c2]===color)return false;return knight(r1,c1,r2,c2)||special(r1,c1,r2,c2)}
+function legal(r1,c1,r2,c2){if(!state||!state.ready||state.turn!==color)return false;if(state.board[r1][c1]!==color||state.board[r2][c2]===color)return false;return knight(r1,c1,r2,c2)||special(r1,c1,r2,c2)}
 function render(){if(!state)return; $('dw').textContent=destName(state.destinations.W);$('db').textContent=destName(state.destinations.B);const need=!state.destinations[color]&&!state.winner;$('help').textContent=need?'Clique em uma casa sem X para escolher seu destino. Depois espere o adversário escolher o dele.':state.ready?'Movimento de cavalo: 2+1 e termina em X. Movimento especial: 3 retas + 1 perpendicular + 1 diagonal. Você pode pular peças.':'Aguardando o outro jogador.';
  const z=$('board');z.innerHTML='';for(let r=0;r<8;r++)for(let c=0;c<8;c++){const cell=document.createElement('button');cell.className='cell '+((r+c)%2?'dark':'light');const number=n(r,c);if(X.has(number))cell.classList.add('x');if(state.destinations.W?.r===r&&state.destinations.W?.c===c)cell.classList.add('destW');if(state.destinations.B?.r===r&&state.destinations.B?.c===c)cell.classList.add('destB');if(sel&&sel[0]===r&&sel[1]===c)cell.classList.add('sel');cell.innerHTML='<span class="num">'+number+(X.has(number)?' X':'')+'</span>';if(state.board[r][c]){const p=document.createElement('div');p.className='piece '+(state.board[r][c]==='W'?'w':'b');cell.appendChild(p)}cell.onclick=()=>click(r,c);z.appendChild(cell)}
  if(state.winner)message('🏆 '+(state.winner===color?'Você venceu!':'Seu adversário venceu!'));else if(!state.destinations.W||!state.destinations.B)message(state.destinations[color]?'Aguardando o destino do adversário.':'Escolha seu destino.');else message(state.turn===color?'Sua vez.':'Vez do adversário.');
